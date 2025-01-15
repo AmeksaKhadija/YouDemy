@@ -1,5 +1,4 @@
 <?php
-// require_once ('./../Controllers/CategorieController.php');
 
 $result = [];
 

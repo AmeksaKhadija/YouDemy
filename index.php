@@ -3,17 +3,27 @@ include dirname(__DIR__) . '/Youdemy/Database/Connection.php';
 include dirname(__DIR__) . '/Youdemy/Models/CategorieModel.php';
 include dirname(__DIR__) . '/Youdemy/Controllers/categorieController.php';
 include dirname(__DIR__) . '/Youdemy/Helpers/CategorieHelpers.php';
-include dirname(__DIR__) . '/Youdemy/Controllers/TagController.php';
-// include dirname(__DIR__) . '/Youdemy/Models/TagModel.php';
 include dirname(__DIR__) . '/Youdemy/Helpers/TagHelpers.php';
+include dirname(__DIR__) . '/Youdemy/Controllers/TagController.php';
+include dirname(__DIR__) . '/Youdemy/Controllers/CourseController.php';
+include dirname(__DIR__) . '/Youdemy/Models/CourseModel.php';
+
 
 $request = $_SERVER['REQUEST_URI'];
 $categorie = new CategorieHelpers();
 $tag = new TagHelpers();
+// $course = new CourseHelpers();
 
 if (isset($request)) {
 
     switch ($request) {
+        case '/home':
+            require __DIR__ . '/Views/Home.php';
+            break;
+        case '/checkToViewDetail':
+            require __DIR__ . '/Views/Details.php';
+            break;
+        // categories
         case  '/AdminBordCateg':
             require __DIR__ . '/Views/AdminBordCateg.php';
             break;
@@ -33,7 +43,7 @@ if (isset($request)) {
         case '/checkToDeleteCategorie':
             $categorie->checkToDeleteCategorie();
             break;
-            
+        // tags
         case '/AdminBordTag':
             require __DIR__ . '/Views/AdminBordTag.php';
             break;
@@ -53,9 +63,13 @@ if (isset($request)) {
         case '/checkToDeletTag':
             $tag->checkToDeletTag();
             break;
-            
+        // course
         case '/AdminCours':
             require __DIR__ . '/Views/AdminCours.php';
+            break;
+        
+        case '/checkToAddCourse':
+            $course->checkToAddCourse();
             break;
     }
 }

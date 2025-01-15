@@ -36,7 +36,6 @@ class TagController
     public function getTagById($id)
     {
         return $this->tagModel->getTagById($id);
-
     }
 }
 

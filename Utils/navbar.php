@@ -6,7 +6,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <!-- Brand -->
-            <a class="navbar-brand py-lg-2 mb-lg-5 px-lg-6 me-0" href="#">
+            <a class="navbar-brand py-lg-2 mb-lg-5 px-lg-6 me-0" href="/home">
                 <h3 class="text-primary"><img src="./../Assets/images/Blue White Minimalist Initial Academy Logo.png" width="40"><span class="text-dark">You</span>Demy</h3> 
             </a>
             <!-- User menu (mobile) -->
