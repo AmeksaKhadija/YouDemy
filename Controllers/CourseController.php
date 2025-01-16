@@ -14,6 +14,7 @@ class CourseController{
 
     }
 
+    // TO DO 
     // public function addLivre($titre, $auteur, $date_creation, $id_categorie, $image, $tags)
     // {
     //     $this->courseModel->addCourse($titre, $auteur, $date_creation, $id_categorie, $image, $tags);
@@ -25,6 +26,7 @@ class CourseController{
         return $livres;
     }
 
+    // TO DO
     // public function addTagToLivre($idLivre, $tagId){
     //     $this->livreModel->addTagToLivre($idLivre, $tagId);
     // }

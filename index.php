@@ -2,17 +2,23 @@
 include dirname(__DIR__) . '/Youdemy/Database/Connection.php';
 include dirname(__DIR__) . '/Youdemy/Models/CategorieModel.php';
 include dirname(__DIR__) . '/Youdemy/Controllers/categorieController.php';
+include dirname(__DIR__) . '/Youdemy/Controllers/AuthController.php';
+include dirname(__DIR__) . '/Youdemy/Helpers/AuthHelpers.php';
 include dirname(__DIR__) . '/Youdemy/Helpers/CategorieHelpers.php';
 include dirname(__DIR__) . '/Youdemy/Helpers/TagHelpers.php';
+include dirname(__DIR__) . '/Youdemy/Helpers/CourseHelpers.php';
 include dirname(__DIR__) . '/Youdemy/Controllers/TagController.php';
 include dirname(__DIR__) . '/Youdemy/Controllers/CourseController.php';
 include dirname(__DIR__) . '/Youdemy/Models/CourseModel.php';
+include dirname(__DIR__) . '/Youdemy/Models/UserModel.php';
+include dirname(__DIR__) . '/Youdemy/Models/RoleModel.php';
 
 
 $request = $_SERVER['REQUEST_URI'];
 $categorie = new CategorieHelpers();
 $tag = new TagHelpers();
-// $course = new CourseHelpers();
+$user = new AuthHelpers();
+$course = new CourseHelpers();
 
 if (isset($request)) {
 
@@ -20,8 +26,20 @@ if (isset($request)) {
         case '/home':
             require __DIR__ . '/Views/Home.php';
             break;
+        // course detail
         case '/checkToViewDetail':
             require __DIR__ . '/Views/Details.php';
+            break;
+        // register
+        case '/Register':
+            require __DIR__ . '/Views/Register.php';
+            break;
+        case '/checkToAddUser':
+            $user->checkToAddUser();
+            break;
+        // login
+        case '/Login':
+            require __DIR__ . '/Views/Login.php';
             break;
         // categories
         case  '/AdminBordCateg':
@@ -71,5 +89,7 @@ if (isset($request)) {
         case '/checkToAddCourse':
             $course->checkToAddCourse();
             break;
+        
+        
     }
 }

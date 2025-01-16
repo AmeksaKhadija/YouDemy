@@ -12,6 +12,7 @@ class CourseHelpers {
 
 
     public function checkToAddCourse(){
+        // TO DO 
         
     }
 }

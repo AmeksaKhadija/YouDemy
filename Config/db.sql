@@ -63,3 +63,7 @@ CREATE TABLE tag_course(
      PRIMARY KEY (course_id, tag_id)
 )ENGINE=INNODB;
 
+
+
+ALTER TABLE users
+ADD photo varchar(255);

@@ -62,8 +62,8 @@ $courses = $courseController->getAllCourse();
             <p class="mb-0">Find the perfect course for your next step in learning</p>
         </div>
         <div class="login_register">
-            <a href="/login"><button class="btn btn-primary">Login</button></a>
-            <a href="/register"><button class="btn btn-primary">Register</button></a>
+            <a href="/Login"><button class="btn btn-primary">Login</button></a>
+            <a href="/Register"><button class="btn btn-primary">Register</button></a>
         </div>
     </header>
 

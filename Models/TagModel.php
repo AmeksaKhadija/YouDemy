@@ -14,9 +14,25 @@ class TagModel
         $this->conn = $conn;
     }
 
-    public function setName($name)
-    {
+    public function setName($name){
         $this->name = $name;
+    }
+
+    public function setDescription($description){
+        $this->description = $description;
+    }
+
+    public function getName(){
+        return $this->name;
+    }
+
+    public function getDescription(){
+        return $this->description;
+    }
+
+
+    public function __toString(){
+        return "Name :" . $this->name . "Description :" .$this->description. "</br>";
     }
 
     public function getAllTags()
