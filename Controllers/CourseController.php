@@ -11,35 +11,27 @@ class CourseController{
         $conn = $database->connect();
         // $conn = (new Connection())->connect();
         $this->courseModel = new CourseModel($conn);
-
     }
-
-    // TO DO 
-    // public function addLivre($titre, $auteur, $date_creation, $id_categorie, $image, $tags)
-    // {
-    //     $this->courseModel->addCourse($titre, $auteur, $date_creation, $id_categorie, $image, $tags);
-    // }
-
+    
     public function getAllCourse()
     {
-        $livres = $this->courseModel->getAllCourse();
-        return $livres;
+        $courses = $this->courseModel->getAllCourse();
+        return $courses;
     }
 
-    // TO DO
-    // public function addTagToLivre($idLivre, $tagId){
-    //     $this->livreModel->addTagToLivre($idLivre, $tagId);
-    // }
-
+    
     public function getCourseById($id)
     {
         return $this->courseModel->getCourseById($id);
     }
-}
     
 
 
-
-
-
+    public function addCourse($titre, $description,$description_courte, $contenu, $enseignant_id, $id_categorie, $tags){
+        
+         $this->courseModel->addCourse($titre, $description,$description_courte, $contenu, $enseignant_id, $id_categorie, $tags);
+    }
+    
+    
+}
 ?>

@@ -41,6 +41,9 @@ if (isset($request)) {
         case '/Login':
             require __DIR__ . '/Views/Login.php';
             break;
+        case '/checkUserIfExiste':
+            $user->checkUserIfExiste();
+            break;
         // categories
         case  '/AdminBordCateg':
             require __DIR__ . '/Views/AdminBordCateg.php';
@@ -89,6 +92,7 @@ if (isset($request)) {
         case '/checkToAddCourse':
             $course->checkToAddCourse();
             break;
+        
         
         
     }

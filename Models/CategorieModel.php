@@ -3,6 +3,7 @@
 class CategorieModel
 {
     private $conn;
+    private $id;
     private $name;
     private $description;
 
@@ -11,6 +12,13 @@ class CategorieModel
         $this->conn = $conn;
         // $this->name = $name;
         // $this->description = $description;
+    }
+
+    public function setId($id){
+        $this->id = $id;
+    }
+    public function getId(){
+        $this->id;
     }
 
     public function setName($name){
@@ -39,9 +47,9 @@ class CategorieModel
     {
         $query = "SELECT * FROM categories";
         $stmt = $this->conn->query($query);
-        $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        if (!empty($users)) {
-            return $users;
+        $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        if (!empty($categories)) {
+            return $categories;
         }
     }
 
@@ -104,7 +112,7 @@ class CategorieModel
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':id', $categoryId, PDO::PARAM_INT);
         $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $result = $stmt->fetchObject(CategorieModel::class);;
     
         if (!empty($result)) {
             return $result;

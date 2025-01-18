@@ -74,19 +74,19 @@ $courses = $courseController->getAllCourse();
                 <div class="col">
                     <div class="card h-100">
                         <?php foreach ($courses as $course): ?>
-                            <img src="<?php echo $course['contenu'] ?>" class="card-img-top" alt="Course Image">
+                            <img src="<?= $course->getContenu() ?>" class="card-img-top" alt="Course Image">
                             <div class="card-body">
-                                <h5 class="card-title"><?php echo $course['titre']; ?></h5>
-                                <p class="card-text"><?php echo $course['description_courte'] ?></p>
-                                <p class="card-text"><?php echo $course['categorie'] ?></p>
-                                <p class="card-text"><?php echo $course['tagss'] ?></p>
+                                <h5 class="card-title"><?= $course->getTitre(); ?></h5>
+                                <p class="card-text"><?= $course->getDescriptionCourte() ?></p>
+                                <p class="card-text"><?= $course->getIdCategorie() ?></p>
+                                <p class="card-text"><?= $course->getTags() ?></p>
                                 <p class="text-muted">4.8 ⭐ (2,345 ratings)</p>
                             </div>
 
                             <form method="POST" action="/checkToViewDetail">
                                 <div class="card-footer text-center">
                                     <input type="submit" class="btn btn-primary" value="SEE MORE">
-                                    <input type="hidden" name="id" value="<?php echo $course['id']; ?>">
+                                    <input type="hidden" name="id" value="<?= $course->getId(); ?>">
                                 </div>
                             </form>
                         <?php endforeach; ?>

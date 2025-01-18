@@ -13,6 +13,14 @@
 
     <div class="container bg-white shadow mt-4 p-4 rounded" style="max-width: 500px;">
         <h2 class="text-center text-primary mt-4 mb-4">Page login</h2>
+
+        <?php if (isset($_SESSION['error'])): ?>
+            <div class="alert alert-danger">
+                <?= htmlspecialchars($_SESSION['error']) ?>
+            </div>
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
+        
         <form method="POST" action="/checkUserIfExiste">
             <div class="mb-3">
                 <label for="email" class="form-label">Email</label>

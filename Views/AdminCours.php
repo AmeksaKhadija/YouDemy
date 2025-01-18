@@ -1,9 +1,12 @@
 <?php
 
 
-$tagController = new TagController();
+$courController = new CourseController();
+$courses = $courController->getAllCourse();
+$categorieController = new categorieController();
+$categories = $categorieController->getAllCategories();
+$tagController = new tagController();
 $tags = $tagController->getAllTags();
-
 ?>
 
 <!DOCTYPE html>
@@ -51,36 +54,54 @@ $tags = $tagController->getAllTags();
                     </div>
                     <div class="card shadow border-0 mb-7">
                         <div class="table-responsive">
-                            <?php if (!empty($tags)): ?>
+                            <?php if (!empty($courses)): ?>
 
                                 <table class="table table-hover table-nowrap">
                                     <thead class="thead-light">
                                         <tr>
                                             <th scope="col">Name</th>
-                                            <th scope="col">Descrition</th>
+                                            <th scope="col">Descrition Courte</th>
+                                            <th scope="col">Categorie</th>
+                                            <th scope="col">Tags</th>
+                                            <th scope="col">Enseignant</th>
                                             <th scope="col">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php foreach ($tags as $tag): ?>
+                                        <?php foreach ($courses as $course): ?>
                                             <tr>
                                                 <td>
                                                     <a class="text-heading font-semibold" href="#">
-                                                        <?php echo $tag['name']; ?>
+                                                        <?= $course->getTitre(); ?>
                                                     </a>
                                                 </td>
                                                 <td>
                                                     <a class="text-heading font-semibold" href="#">
-                                                        <?php echo $tag['description']; ?>
+                                                        <?= $course->getDescriptionCourte(); ?>
                                                     </a>
                                                 </td>
                                                 <td>
-                                                    <form method="POST" action="/checkToEditTag">
-                                                        <input type="hidden" name="id" value="<?php echo $tag['id']; ?>">
+                                                    <a class="text-heading font-semibold" href="#">
+                                                        <?= $course->getIdCategorie(); ?>
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <a class="text-heading font-semibold" href="#">
+                                                        <?= $course->getTags(); ?>
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <a class="text-heading font-semibold" href="#">
+                                                        <?= $course->getEnseignant(); ?>
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <form method="POST" action="/checkToEditCourse">
+                                                        <input type="hidden" name="id" value="<?= $course->getId(); ?>">
                                                         <input type="submit" class="btn btn-sm btn-neutral" value="Edit">
                                                     </form>
-                                                    <form method="POST" action="/checkToDeletTag">
-                                                        <input type="hidden" name="id" value="<?php echo $tag['id']; ?>">
+                                                    <form method="POST" action="/checkToDeletCourse">
+                                                        <input type="hidden" name="id" value="<?= $course->getId(); ?>">
                                                         <input type="submit" class="btn btn-sm btn-neutral" value="delete">
                                                     </form>
                                                 </td>
@@ -89,7 +110,7 @@ $tags = $tagController->getAllTags();
                                     </tbody>
                                 </table>
                             <?php else: ?>
-                                <p>Aucun tags trouvé.</p>
+                                <p>Aucun course trouvé.</p>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -107,20 +128,60 @@ $tags = $tagController->getAllTags();
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form method='POST' action="/checkToAddTag">
+                    <form method='POST' action="/checkToAddCourse">
                         <div class="mb-3">
-                            <label for="name" class="form-label">Name</label>
-                            <input type="text" class="form-control" name="name" id="name"
+                            <label for="name" class="form-label">Titre de cour</label>
+                            <input type="text" class="form-control" name="titre" id="titre"
                                 aria-describedby="nomUtilisateur">
                         </div>
                         <div class="mb-3">
-                            <label for="description" class="form-label">Description</label>
+                            <label for="description" class="form-label">Description courte</label>
+                            <input type="text" class="form-control" name="description_courte" id="description"
+                                aria-describedby="nomUtilisateur">
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description complet du cour</label>
                             <input type="text" class="form-control" name="description" id="description"
                                 aria-describedby="nomUtilisateur">
                         </div>
+                        <div class="mb-3">
+                            <label for="contenu" class="form-label">Contenu</label>
+                            <input type="file" class="form-control" name="contenu" id="contenu"
+                                aria-describedby="nomUtilisateur">
+                        </div>
+                        <div class="mb-3">
+                            <label for="enseignant_id" class="form-label">Enseignant</label>
+                            <input type="text" class="form-control" name="enseignant_id" id="enseignant_id"
+                                aria-describedby="nomUtilisateur">
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_categorie" class="form-label">Catégorie</label>
+                            <select class="form-select" name="id_categorie" id="id_categorie" required>
+                                <?php foreach ($categories as $categories) : ?>
+                                    <option value="<?php echo $categories['id']; ?>">
+                                        <?php echo htmlspecialchars($categories['name']); ?>
+                                    </option>
+                                <?php endforeach ?>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Tags</label>
+                            <div class="form-check">
+                                <?php foreach ($tags as $tag) : ?>
+                                    <div>
+                                        <input class="form-check-input" type="checkbox" name="tags[]"
+                                            value="<?php echo $tag['id']; ?>" id="tag-<?php echo $tag['id']; ?>">
+                                        <label class="form-check-label" for="tag-<?php echo $tag['id']; ?>">
+                                            <?php echo htmlspecialchars($tag['name']); ?>
+                                        </label>
+                                    </div>
+                                <?php endforeach ?>
+                            </div>
+                        </div>
+                        
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" name="submit" class=" btn btn-dark">Ajouter Tag</button>
+                            <button type="submit" name="submit" class=" btn btn-dark">save Course</button>
                         </div>
                     </form>
                 </div>

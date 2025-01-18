@@ -1,4 +1,5 @@
 <?php
+#[\AllowDynamicProperties]
 
 class UserModel
 {
@@ -76,6 +77,7 @@ class UserModel
 
     public function getFirstname(): string
     {
+
         return $this->firstname;
     }
 
@@ -176,6 +178,7 @@ class UserModel
     }
 
 
+
     public function insertUser(UserModel $user)
     {
         // die($user);
@@ -194,4 +197,29 @@ class UserModel
             $user->getRole()->getId()
         ]);
     }
+
+
+
+    public function findByEmailAndPassword(UserModel $user)
+    {
+        $query = "SELECT id, firstname, lastname, email, phone, photo, role_id, password FROM users WHERE email = :email AND password = :password";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute([
+            'email' => $user->getEmail(),
+            'password' => $user->getPassword(),
+        ]);
+        
+        $result = $stmt->fetchObject(__CLASS__);
+       
+        if (!$result) {
+            // L'utilisateur n'existe pas
+            
+            return false;
+        }
+        // var_dump($result);
+        // die();
+        return $result;
+    }
+    
+
 }

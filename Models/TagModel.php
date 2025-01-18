@@ -99,7 +99,7 @@ class TagModel
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':id', $tagId, PDO::PARAM_INT);
         $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $result = $stmt->fetchObject(TagModel::class);
     
         if (!empty($result)) {
             return $result;

@@ -1,11 +1,12 @@
 <?php
 
 
-class AuthController{
+class AuthController
+{
     private $conn;
     private $UserModel;
 
-    
+
     public function __construct()
     {
         $conn = (new Connection())->connect();
@@ -15,5 +16,12 @@ class AuthController{
     public function insertUser($userModel)
     {
         $this->UserModel->insertUser($userModel);
+    }
+
+    public function findByEmailAndPassword($userModel)
+    {
+        
+       return $this->UserModel->findByEmailAndPassword($userModel);
+
     }
 }
