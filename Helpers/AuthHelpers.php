@@ -33,32 +33,28 @@ class AuthHelpers{
     }
     
     public function checkUserIfExiste()
-{
-    if (!empty($_POST['email']) && !empty($_POST['password'])) {
-        $email = htmlspecialchars($_POST['email']);
-        $password = htmlspecialchars($_POST['password']);
-
-        $userModel = UserModel::instaceWithEmailAndPassword($email, $password);
-
-        $userModel1 = $this->user->findByEmailAndPassword($userModel);
-        // var_dump($userModel1);
-        // die();
-        if (!$userModel1) {
-            echo "Email ou mot de passe incorrect";
+    {
+        if (!empty($_POST['email']) && !empty($_POST['password'])) {
+            $email = htmlspecialchars($_POST['email']);
+            $password = htmlspecialchars($_POST['password']);
+            $userModel = UserModel::instaceWithEmailAndPassword($email, $password);
+            $userModel1 = $this->user->findByEmailAndPassword($userModel);
+            // var_dump($userModel1);
+            // die();
+            if (!$userModel1) {
+                echo "Email ou mot de passe incorrect";
+                header("Location: /Login");
+                exit();
+            }
+            // $_SESSION['user'] = $userModel1;
+            header("Location: /home");
+            exit();
+        } else {
+            echo "Veuillez remplir tous les champs";
             header("Location: /Login");
             exit();
         }
-
-        // $_SESSION['user'] = $userModel1;
-
-        header("Location: /home");
-        exit();
-    } else {
-        echo "Veuillez remplir tous les champs";
-        header("Location: /Login");
-        exit();
     }
-}
 
-
+    
 }

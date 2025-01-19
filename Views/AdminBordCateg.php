@@ -74,7 +74,7 @@ $categories = $categorieController->getAllCategories();
                                                         <?php echo $categorie['description']; ?>
                                                     </a>
                                                 </td>
-                                                <td>
+                                                <td class="d-flex gap-2">
                                                     <form method="POST" action="/checkToEditCategorie">
                                                         <input type="hidden" name="id" value="<?php echo $categorie['id']; ?>">
                                                         <input type="submit" class="btn btn-sm btn-neutral" value="Edit">

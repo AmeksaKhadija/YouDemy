@@ -18,10 +18,10 @@ class UserModel
     public function __construct()
     {
         $this->conn = (new Connection())->connect();
-        // $this->role = new RoleModel($this->conn);
     }
 
 
+   
     public static function instanceWithFirstnameAndLastname(string $firstName, string $lastName)
     {
         $instance = new self();
@@ -148,6 +148,9 @@ class UserModel
 
     public function getRole(): RoleModel
     {
+        if ($this->role === null) {
+            $this->role = new RoleModel();
+        }
         return $this->role;
     }
 
@@ -197,9 +200,40 @@ class UserModel
             $user->getRole()->getId()
         ]);
     }
-
-
-
+    public function getAllUsers()
+    {
+        $this->conn = new Connection();
+    
+        $query = "SELECT users.id, users.firstname, users.lastname, users.email, users.password, users.phone, users.status, roles.id as role_id, roles.role_name as role_name, users.photo
+                  FROM users
+                  JOIN roles ON users.role_id = roles.id";
+        $stmt = $this->conn->connect()->query($query);
+    
+        $users = $stmt->fetchAll(PDO::FETCH_ASSOC); 
+    
+        if (!empty($users)) {
+            foreach ($users as &$user) {
+                $role = new RoleModel();
+                $role->setId($user['role_id']);
+                $role->setRoleName($user['role_name']); 
+                $user['role'] = $role;
+            
+                $userModel = new UserModel();
+                $userModel->setId($user['id']);
+                $userModel->setFirstname($user['firstname']);
+                $userModel->setLastname($user['lastname']);
+                $userModel->setEmail($user['email']);
+                $userModel->setPhone($user['phone']);
+                $userModel->setStatus($user['status']);
+                $userModel->setPhoto($user['photo']);
+                $userModel->setRole($role);  
+                $userModel->setCourses([]);  
+            
+                $user = $userModel;
+            }
+            return $users;
+        }
+    }
     public function findByEmailAndPassword(UserModel $user)
     {
         $query = "SELECT id, firstname, lastname, email, phone, photo, role_id, password FROM users WHERE email = :email AND password = :password";
@@ -208,18 +242,76 @@ class UserModel
             'email' => $user->getEmail(),
             'password' => $user->getPassword(),
         ]);
-        
+
         $result = $stmt->fetchObject(__CLASS__);
-       
+
         if (!$result) {
-            // L'utilisateur n'existe pas
-            
+            echo "L'utilisateur n'existe pas";
             return false;
         }
-        // var_dump($result);
-        // die();
         return $result;
     }
-    
 
+    
+    // edit status
+
+    public function ModifierStatus(string $status, int $userId)
+    {
+        $query = "UPDATE users SET status = :status WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':status', $status, PDO::PARAM_STR);
+        $stmt->bindParam(':id', $userId, PDO::PARAM_INT);
+
+        return $stmt->execute();
+    }
+    // delete user
+    public function deleteUser($userId)
+    {
+        $existingUser = $this->getUserById($userId);
+    
+        if ($existingUser) {
+            $query = "DELETE FROM users WHERE id = :id";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':id', $userId, PDO::PARAM_INT);
+        
+            if ($stmt->execute()) {
+                echo "Utilisateur supprimé avec succès.";
+            } else {
+                echo "Erreur lors de la suppression de l'utilisateur.";
+            }
+        } else {
+            echo "Utilisateur introuvable.";
+        }
+    }
+
+    public function getUserById(int $id)
+    {
+        $query = "SELECT * FROM users WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+        if ($user) {
+            $role = new RoleModel();
+            $role->setId($user['role_id']);
+            $role->setRoleName($user['role_name']);
+    
+            $userModel = new UserModel();
+            $userModel->setId($user['id']);
+            $userModel->setFirstname($user['firstname']);
+            $userModel->setLastname($user['lastname']);
+            $userModel->setEmail($user['email']);
+            $userModel->setPhone($user['phone']);
+            $userModel->setStatus($user['status']);
+            $userModel->setPhoto($user['photo']);
+            $userModel->setRole($role);
+    
+            return $userModel;
+        }
+    
+        return null;
+    }
+    
+    
 }

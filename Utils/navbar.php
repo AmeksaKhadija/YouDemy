@@ -28,7 +28,7 @@
                 <ul class="navbar-nav">
                     <li class="nav-item">
                         <a href="/AdminStatistics" class="nav-link" href="adminBord.php">
-                            <i class="bi bi-house"></i> Dashboard
+                            <i class="bi bi-house"></i> Statistiques
                         </a>
                     </li>
                     

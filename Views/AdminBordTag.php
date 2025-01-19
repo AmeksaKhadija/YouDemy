@@ -74,7 +74,7 @@ $tags = $tagController->getAllTags();
                                                         <?php echo $tag['description']; ?>
                                                     </a>
                                                 </td>
-                                                <td>
+                                                <td class="d-flex gap-2">
                                                     <form method="POST" action="/checkToEditTag">
                                                         <input type="hidden" name="id" value="<?php echo $tag['id']; ?>">
                                                         <input type="submit" class="btn btn-sm btn-neutral" value="Edit">

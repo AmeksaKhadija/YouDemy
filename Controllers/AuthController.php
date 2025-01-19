@@ -20,8 +20,7 @@ class AuthController
 
     public function findByEmailAndPassword($userModel)
     {
-        
        return $this->UserModel->findByEmailAndPassword($userModel);
-
     }
+
 }

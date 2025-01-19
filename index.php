@@ -7,17 +7,21 @@ include dirname(__DIR__) . '/Youdemy/Helpers/AuthHelpers.php';
 include dirname(__DIR__) . '/Youdemy/Helpers/CategorieHelpers.php';
 include dirname(__DIR__) . '/Youdemy/Helpers/TagHelpers.php';
 include dirname(__DIR__) . '/Youdemy/Helpers/CourseHelpers.php';
+include dirname(__DIR__) . '/Youdemy/Helpers/UserHelpers.php';
 include dirname(__DIR__) . '/Youdemy/Controllers/TagController.php';
 include dirname(__DIR__) . '/Youdemy/Controllers/CourseController.php';
+include dirname(__DIR__) . '/Youdemy/Controllers/UserController.php';
 include dirname(__DIR__) . '/Youdemy/Models/CourseModel.php';
 include dirname(__DIR__) . '/Youdemy/Models/UserModel.php';
 include dirname(__DIR__) . '/Youdemy/Models/RoleModel.php';
 
 
 $request = $_SERVER['REQUEST_URI'];
+
 $categorie = new CategorieHelpers();
 $tag = new TagHelpers();
 $user = new AuthHelpers();
+$utilisateur = new UserHelpers();
 $course = new CourseHelpers();
 
 if (isset($request)) {
@@ -92,8 +96,27 @@ if (isset($request)) {
         case '/checkToAddCourse':
             $course->checkToAddCourse();
             break;
+        case '/checkToEditCourse':
+            $course->checkToEditCourse();
+            break;
+        // modifier status du cour 
+        case '/ModifierStatusCour':
+            $course->checkToEditStatusCourse();
+            break;
+        // utilisateurs
+        case '/AdminUsers':
+            require __DIR__ . '/Views/AdminUsers.php';
+            break;
+        case '/ModifierStatus':
+            $utilisateur->ckeckToModifierStatus();
+            break;
+        case '/DeletUser':
+            $utilisateur->checkToDeleteUser();
+            break;
         
-        
-        
+
+        case '/EnseignantCourse':
+            require __DIR__ . '/Views/EnseignantCourse.php';
+            break;
     }
 }
