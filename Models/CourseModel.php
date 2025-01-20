@@ -141,27 +141,85 @@ class CourseModel
             return $courses;
         }
     }
-
-    public function getAllCourseWithoutEnseignant()
+    // afficher les course qui ont un status active
+    public function getAllCourseActive()
     {
-
         $this->conn = new Connection();
-        $query = "SELECT  courses.id,  courses.titre,  courses.description_courte,  courses.description,  courses.contenu,  categories.name AS categorie,  GROUP_CONCAT(tags.name SEPARATOR ', ') AS tags, courses.status
-                FROM courses 
-                JOIN tag_course  ON courses.id = tag_course.course_id
-                JOIN tags ON tag_course.tag_id = tags.id
-                JOIN categories ON courses.categorie_id = categories.id
-                GROUP BY courses.id
-            ";
+        $query = "SELECT  
+                courses.id,  
+                courses.titre,  
+                courses.description_courte,  
+                courses.description,  
+                courses.contenu,  
+                categories.name AS categorie,  
+                GROUP_CONCAT(tags.name SEPARATOR ', ') AS tags,  
+                users.firstname AS enseignant, 
+                courses.status
+            FROM courses 
+            JOIN tag_course ON courses.id = tag_course.course_id
+            JOIN tags ON tag_course.tag_id = tags.id
+            JOIN categories ON courses.categorie_id = categories.id
+            JOIN users ON courses.enseignant_id = users.id
+            WHERE courses.status = 'active'
+            GROUP BY courses.id";
+
         $stmt = $this->conn->connect()->query($query);
         $courses = $stmt->fetchAll(PDO::FETCH_CLASS, CourseModel::class);
-        // foreach ($courses as $course) {
-        //     var_dump($course);
-        // }
 
         if (!empty($courses)) {
             return $courses;
         }
+
+        return [];
+    }
+    public function getCourseByEnseignant($enseignant_id)
+    {
+        $this->conn = new Connection();
+        $query = "SELECT courses.id, courses.titre, courses.description_courte, 
+                     courses.description, courses.contenu, categories.name AS categorie,
+                     GROUP_CONCAT(tags.name SEPARATOR ', ') AS tags, courses.status
+              FROM courses 
+              JOIN tag_course ON courses.id = tag_course.course_id
+              JOIN tags ON tag_course.tag_id = tags.id
+              JOIN categories ON courses.categorie_id = categories.id
+              WHERE courses.enseignant_id = :enseignant_id
+              GROUP BY courses.id";
+
+        $stmt = $this->conn->connect()->prepare($query);
+        $stmt->bindParam(':enseignant_id', $enseignant_id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $courses = $stmt->fetchAll(PDO::FETCH_CLASS, CourseModel::class);
+
+        if (!empty($courses)) {
+            return $courses;
+        }
+        return [];
+    }
+
+    public function getCoursAndNumbreInscription($enseignant_id){
+        $this->conn = new Connection();
+    $query = "SELECT 
+                courses.id,
+                courses.titre,
+                courses.description_courte,
+                courses.description,
+                courses.contenu,
+                categories.name AS categorie,
+                GROUP_CONCAT(DISTINCT tags.name SEPARATOR ', ') AS tags,
+                courses.status,
+                COUNT(DISTINCT inscription.etudiant_id) as nombre_inscriptions
+            FROM courses 
+            LEFT JOIN tag_course ON courses.id = tag_course.course_id
+            LEFT JOIN tags ON tag_course.tag_id = tags.id
+            LEFT JOIN categories ON courses.categorie_id = categories.id
+            LEFT JOIN inscription ON courses.id = inscription.course_id
+            WHERE courses.enseignant_id = :enseignant_id
+            GROUP BY courses.id";
+            
+    $stmt = $this->conn->connect()->prepare($query);
+    $stmt->execute(['enseignant_id' => $enseignant_id]);
+    return $stmt->fetchAll(PDO::FETCH_CLASS, CourseModel::class);
     }
 
     public function getCourseById($id)
@@ -200,10 +258,19 @@ class CourseModel
 
 
     // l'ajout d'un cour
-    public function addCourse($titre, $description, $description_courte, $contenu, $id_categorie, $tags, $status)
+    public function addCourse($titre, $description, $description_courte, $contenu, $id_categorie, $tags, $enseignant_id, $status)
     {
+
         // var_dump($titre, $description,$description_courte, $contenu, $enseignant_id, $id_categorie, $tags);
-        // die();
+        //     die();
+        if (!isset($_SESSION['user'])) {
+            return "Vous devez être connecté pour vous ajouter un cours.";
+        }
+        var_dump($_SESSION['user']);
+        $enseignant_id = $_SESSION['user']->getId();
+
+
+
         try {
             $this->conn = new Connection();
             $pdo = $this->conn->connect();
@@ -212,8 +279,8 @@ class CourseModel
                 $pdo->beginTransaction();
             }
 
-            $query = "INSERT INTO courses (titre, description, description_courte, contenu, categorie_id, status) 
-                      VALUES (:titre, :description, :description_courte, :contenu, :id_categorie, :status)";
+            $query = "INSERT INTO courses (titre, description, description_courte, contenu, categorie_id, enseignant_id, status) 
+                      VALUES (:titre, :description, :description_courte, :contenu, :id_categorie, :enseignant_id, :status)";
 
             $stmt = $pdo->prepare($query);
             $stmt->bindParam(':titre', $titre);
@@ -221,8 +288,8 @@ class CourseModel
             $stmt->bindParam(':description_courte', $description_courte);
             $stmt->bindParam(':contenu', $contenu);
             $stmt->bindParam(':id_categorie', $id_categorie);
+            $stmt->bindParam(':enseignant_id', $enseignant_id);
             $stmt->bindParam(':status', $status);
-            // $stmt->bindParam(':enseignant_id', $enseignant_id);
 
             $stmt->execute();
 

@@ -20,22 +20,37 @@ class CourseController
         return $courses;
     }
 
-    public function getAllCourseWithoutEnseignant()
+    public function getAllCourseActive()
     {
-        $courses = $this->courseModel->getAllCourseWithoutEnseignant();
+        $courses = $this->courseModel->getAllCourseActive();
+        return array_filter($courses, function($course) {
+            return $course->getStatus() === 'active';
+        });
+    }
+
+    public function getCourseByEnseignant()
+    {
+        $enseignant_id = $_SESSION['user']->getId();
+        $courses = $this->courseModel->getCourseByEnseignant($enseignant_id);
         return $courses;
     }
+
+    public function getCoursAndNumbreInscription(){
+        $enseignant_id = $_SESSION['user']->getId();
+        $courses = $this->courseModel->getCoursAndNumbreInscription($enseignant_id);
+        return $courses;
+    }
+
 
     public function getCourseById($id)
     {
         return $this->courseModel->getCourseById($id);
     }
 
-    public function addCourse($titre, $description, $description_courte, $contenu, $id_categorie, $tags, $status)
+    public function addCourse($titre, $description, $description_courte, $contenu, $id_categorie, $tags, $enseignant_id, $status)
     {
-        // var_dump($titre, $description,$description_courte, $contenu, $enseignant_id, $id_categorie, $tags);
-        //     die();
-        return $this->courseModel->addCourse($titre, $description, $description_courte, $contenu, $id_categorie, $tags, $status);
+
+        return $this->courseModel->addCourse($titre, $description, $description_courte, $contenu, $id_categorie, $tags, $enseignant_id, $status);
     }
 
     public function EditCourse($titre, $description, $description_courte, $contenu, $id_categorie, $tags)

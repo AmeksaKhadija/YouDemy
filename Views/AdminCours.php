@@ -102,8 +102,8 @@ $tags = $tagController->getAllTags();
                                                     </form>
                                                     <form method="POST" action="/ModifierStatusCour">
                                                         <input type="hidden" name="id" value="<?= $course->getId(); ?>">
-                                                        <input type="hidden" name="status" value="suspended">
-                                                        <input type="submit" class="btn btn-sm btn-neutral" value="Suspendre">
+                                                        <input type="hidden" name="status" value="rejeter">
+                                                        <input type="submit" class="btn btn-sm btn-neutral" value="Rejeter">
                                                     </form>
                                                     <form method="POST" action="/DeletUser">
                                                         <input type="hidden" name="id" value="<?= $course->getId(); ?>">

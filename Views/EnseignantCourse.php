@@ -1,6 +1,8 @@
 <?php
 if (isset($_SESSION['user'])) {
     $UserName = $_SESSION['user']->getRole()->getRoleName();
+    $enseignant_id = $_SESSION['user']->getId();
+
     if ($UserName == 'Etudiant') {
        header('location: /home');
     }else if ($UserName == 'Admin') {
@@ -9,7 +11,7 @@ if (isset($_SESSION['user'])) {
     }
 
 $courController = new CourseController();
-$courses = $courController->getAllCourseWithoutEnseignant();
+$courses = $courController->getCourseByEnseignant();
 $categorieController = new categorieController();
 $categories = $categorieController->getAllCategories();
 $tagController = new tagController();
@@ -32,8 +34,6 @@ $tags = $tagController->getAllTags();
 <!-- bytewebster.com -->
 
 <body>
-    <?php 
-    ?>
     <!-- Dashboard -->
     <div class="d-flex flex-column flex-lg-row h-lg-full bg-surface-secondary">
         <!-- Vertical Navbar -->
@@ -64,11 +64,6 @@ $tags = $tagController->getAllTags();
                 <div class="collapse navbar-collapse" id="sidebarCollapse">
                     <!-- Navigation -->
                     <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a href="/EnseignantStatistics" class="nav-link" href="adminBord.php">
-                                <i class="bi bi-house"></i> Statistiques
-                            </a>
-                        </li>
                         <li class="nav-item">
                             <a href="/EnseignantCourse" class="nav-link" href="adminLivres.php">
                                 <i class="bi bi-file-text"></i>Mes Cours
@@ -206,11 +201,11 @@ $tags = $tagController->getAllTags();
                             <input type="file" class="form-control" name="contenu" id="contenu"
                                 aria-describedby="nomUtilisateur">
                         </div>
-                        <!-- <div class="mb-3">
-                            <label for="enseignant_id" class="form-label">Enseignant</label>
-                            <input type="text" class="form-control" name="enseignant_id" id="enseignant_id"
+                        <div class="mb-3">
+                            <!-- <label for="enseignant_id" class="form-label">Enseignant</label> -->
+                            <input type="hidden" class="form-control" name="enseignant_id" id="enseignant_id"
                                 aria-describedby="nomUtilisateur">
-                        </div> -->
+                        </div>
                         <div class="mb-3">
                             <label for="id_categorie" class="form-label">Catégorie</label>
                             <select class="form-select" name="id_categorie" id="id_categorie" required>

@@ -104,6 +104,7 @@ if (isset($request)) {
             break;
         // enseignat ajouter course
         case '/checkToAddCourse':
+            
             $course->checkToAddCourse();
             break;
         // edit course
@@ -131,11 +132,13 @@ if (isset($request)) {
             $utilisateur->checkToDeleteUser();
             break;
         
-
+            // enseignant
         case '/EnseignantCourse':
             require __DIR__ . '/Views/EnseignantCourse.php';
             break;
-
+        case '/studentsInscrire':
+            require __DIR__ . '/Views/studentsInscrire.php';
+            break;
         // Admin statistiques
         case '/AdminStatistics':
             require __DIR__ . '/Views/AdminStatistics.php';

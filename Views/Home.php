@@ -1,13 +1,13 @@
 <?php
-  
+
 if (isset($_SESSION['user'])) {
-      if ($_SESSION['user']->getRole()->getRoleName() == 'Admin') {
-         header('location: /AdminStatistics');
-      }
+    if ($_SESSION['user']->getRole()->getRoleName() == 'Admin') {
+        header('location: /AdminStatistics');
+    }
 }
-  
+
 $courseController = new CourseController();
-$courses = $courseController->getAllCourse();
+$courses = $courseController->getAllCourseActive();
 
 ?>
 <!DOCTYPE html>
@@ -64,18 +64,18 @@ $courses = $courseController->getAllCourse();
 
 <body>
     <header class="text-center py-4">
-      
+
         <div class="header_title">
             <h1>Explore our Courses</h1>
             <p class="mb-0">Find the perfect course for your next step in learning</p>
         </div>
-        <?php if (!isset($_SESSION['user'])) :?>
+        <?php if (!isset($_SESSION['user'])) : ?>
             <div class="login_register">
                 <a href="/Login"><button class="btn btn-primary">Login</button></a>
                 <a href="/Register"><button class="btn btn-primary">Register</button></a>
             </div>
         <?php endif; ?>
-        <?php if (isset($_SESSION['user'])) :?>
+        <?php if (isset($_SESSION['user'])) : ?>
             <div class="login_register">
                 <a href="/logout"><button class="btn btn-primary">Logout</button></a>
             </div>
@@ -83,12 +83,12 @@ $courses = $courseController->getAllCourse();
     </header>
 
     <main class="container my-5">
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
-            <?php if (!empty($courses)): ?>
-                <!-- Card 1 -->
-                <div class="col">
-                    <div class="card h-100">
-                        <?php foreach ($courses as $course): ?>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+        <?php if (!empty($courses)): ?>
+            <?php foreach ($courses as $course): ?>
+                <?php if ($course->getStatus() === 'active'): ?>
+                    <div class="col">
+                        <div class="card h-100">
                             <img src="<?= $course->getContenu() ?>" class="card-img-top" alt="Course Image">
                             <div class="card-body">
                                 <h5 class="card-title"><?= $course->getTitre(); ?></h5>
@@ -104,14 +104,15 @@ $courses = $courseController->getAllCourse();
                                     <input type="hidden" name="id" value="<?= $course->getId(); ?>">
                                 </div>
                             </form>
-                        <?php endforeach; ?>
+                        </div>
                     </div>
-                </div>
-            <?php else: ?>
-                <p>Aucun courses trouvé.</p>
-            <?php endif; ?>
-        </div>
-    </main>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <p>Aucun courses trouvé.</p>
+        <?php endif; ?>
+    </div>
+</main>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>

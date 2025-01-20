@@ -26,18 +26,7 @@ class EtudiantModel extends UserModel
         $userId = $_SESSION['user']->getId();
 
         try {
-
-            // $queryCheck = "SELECT * FROM inscription WHERE course_id = :course_id AND etudiant_id = :etudiant_id";
-            // $stmtCheck = $this->conn->connect()->prepare($queryCheck);
-            // $stmtCheck->bindParam(':course_id', $courseId, PDO::PARAM_INT);
-            // $stmtCheck->bindParam(':etudiant_id', $userId, PDO::PARAM_INT);
-            // $stmtCheck->execute();
-
-            // if ($stmtCheck->rowCount() > 0) {
-            //     header("location: /home");
-            // }
-
-
+            
             $query = "INSERT INTO inscription (course_id, etudiant_id) VALUES (:course_id, :etudiant_id)";
             $stmt = $this->conn->connect()->prepare($query);
             $stmt->bindParam(':course_id', $courseId, PDO::PARAM_INT);
