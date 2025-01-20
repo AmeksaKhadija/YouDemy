@@ -1,5 +1,10 @@
 <?php
-
+if (isset($_SESSION['user'])) {
+    $UserName = $_SESSION['user']->getRole()->getRoleName();
+    if ($UserName == 'Etudiant' || $UserName == 'Enseignant') {
+       header('location: /home');
+    }
+    }
 
 $tagController = new TagController();
 $tags = $tagController->getAllTags();

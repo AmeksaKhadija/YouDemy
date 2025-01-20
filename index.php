@@ -1,5 +1,9 @@
 <?php
-include dirname(__DIR__) . '/Youdemy/Database/Connection.php';
+    include dirname(__DIR__) . '/Youdemy/Database/Connection.php';
+spl_autoload_register(function($class){
+    require_once dirname(__DIR__) . '/Youdemy/Models/'.$class.'.php';
+});
+session_start();
 include dirname(__DIR__) . '/Youdemy/Models/CategorieModel.php';
 include dirname(__DIR__) . '/Youdemy/Controllers/categorieController.php';
 include dirname(__DIR__) . '/Youdemy/Controllers/AuthController.php';
@@ -11,11 +15,13 @@ include dirname(__DIR__) . '/Youdemy/Helpers/UserHelpers.php';
 include dirname(__DIR__) . '/Youdemy/Controllers/TagController.php';
 include dirname(__DIR__) . '/Youdemy/Controllers/CourseController.php';
 include dirname(__DIR__) . '/Youdemy/Controllers/UserController.php';
-include dirname(__DIR__) . '/Youdemy/Models/CourseModel.php';
-include dirname(__DIR__) . '/Youdemy/Models/UserModel.php';
-include dirname(__DIR__) . '/Youdemy/Models/RoleModel.php';
+// include dirname(__DIR__) . '/Youdemy/Models/CourseModel.php';
+// include dirname(__DIR__) . '/Youdemy/Models/UserModel.php';
+// include dirname(__DIR__) . '/Youdemy/Models/RoleModel.php';
 
 
+// var_dump($_SESSION['user']);
+// die();
 $request = $_SERVER['REQUEST_URI'];
 
 $categorie = new CategorieHelpers();
@@ -47,6 +53,10 @@ if (isset($request)) {
             break;
         case '/checkUserIfExiste':
             $user->checkUserIfExiste();
+            break;
+        // logout
+        case '/logout':
+            $user->logout();
             break;
         // categories
         case  '/AdminBordCateg':
@@ -92,12 +102,19 @@ if (isset($request)) {
         case '/AdminCours':
             require __DIR__ . '/Views/AdminCours.php';
             break;
-        
+        // enseignat ajouter course
         case '/checkToAddCourse':
             $course->checkToAddCourse();
             break;
+        // edit course
         case '/checkToEditCourse':
+            require __DIR__ . '/Views/EditCourse.php';
+            break;
+        case '/submitFormEdite':
             $course->checkToEditCourse();
+            break;
+        case '/checkToDeletCourse':
+            $course->checkToDeletCourse();
             break;
         // modifier status du cour 
         case '/ModifierStatusCour':
@@ -117,6 +134,21 @@ if (isset($request)) {
 
         case '/EnseignantCourse':
             require __DIR__ . '/Views/EnseignantCourse.php';
+            break;
+
+        // Admin statistiques
+        case '/AdminStatistics':
+            require __DIR__ . '/Views/AdminStatistics.php';
+            break;
+        
+        // inscription
+        case '/inscriAuCour':
+            $utilisateur->checkToInscriAuCour();
+            break;
+        
+        // apres l'inscription
+        case '/MesCourses':
+            require __DIR__ . '/Views/MesCourses.php';
             break;
     }
 }

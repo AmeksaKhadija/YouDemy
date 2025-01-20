@@ -20,7 +20,8 @@ class CourseModel
     private $status;
 
 
-    public function __construct() {
+    public function __construct()
+    {
         // $this->conn = (new Connection())->connect();
     }
 
@@ -108,11 +109,13 @@ class CourseModel
     }
 
 
-    public function getStatus(){
+    public function getStatus()
+    {
         return $this->status;
     }
 
-    public function setStatus($status){
+    public function setStatus($status)
+    {
         $this->status = $status;
     }
     // afficher tous les cours 
@@ -211,7 +214,7 @@ class CourseModel
 
             $query = "INSERT INTO courses (titre, description, description_courte, contenu, categorie_id, status) 
                       VALUES (:titre, :description, :description_courte, :contenu, :id_categorie, :status)";
-                      
+
             $stmt = $pdo->prepare($query);
             $stmt->bindParam(':titre', $titre);
             $stmt->bindParam(':description', $description);
@@ -220,10 +223,10 @@ class CourseModel
             $stmt->bindParam(':id_categorie', $id_categorie);
             $stmt->bindParam(':status', $status);
             // $stmt->bindParam(':enseignant_id', $enseignant_id);
-            
+
             $stmt->execute();
-           
-            
+
+
             $idCourse = $pdo->lastInsertId();
             $sql = "INSERT INTO tag_course (course_id, tag_id) VALUES (:course_id, :tag_id)";
             $stmt = $pdo->prepare($sql);
@@ -247,12 +250,62 @@ class CourseModel
         }
     }
 
-    public function EditCourse($titre, $description,$description_courte, $contenu, $enseignant_id, $id_categorie, $tags){
+    public function EditCourse($titre, $description, $description_courte, $contenu, $id_categorie, $tags)
+    {
+        // var_dump($titre, $description, $description_courte, $contenu, $enseignant_id, $id_categorie, $tags);
+        // die();
+        try {
+            $this->conn = new Connection();
+            $pdo = $this->conn->connect();
 
+            if (!$pdo->inTransaction()) {
+                $pdo->beginTransaction();
+            }
+
+            $query = "UPDATE courses SET titre = :titre, description = :description, description_courte = :description_courte, contenu = :contenu, categorie_id = :id_categorie WHERE id = :id";
+
+            $stmt = $pdo->prepare($query);
+            $stmt->bindParam(':titre', $titre);
+            $stmt->bindParam(':description', $description);
+            $stmt->bindParam(':description_courte', $description_courte);
+            $stmt->bindParam(':contenu', $contenu);
+            // $stmt->bindParam(':enseignant_id', $enseignant_id);
+            $stmt->bindParam(':id_categorie', $id_categorie);
+            $stmt->bindParam(':id', $_POST['id']);
+
+            $stmt->execute();
+
+            $deleteTagsQuery = "DELETE FROM tag_course WHERE course_id = :course_id";
+            $deleteStmt = $pdo->prepare($deleteTagsQuery);
+            $deleteStmt->bindParam(':course_id', $_POST['id']);
+            $deleteStmt->execute();
+
+            $insertTagQuery = "INSERT INTO tag_course (course_id, tag_id) VALUES (:course_id, :tag_id)";
+            $insertStmt = $pdo->prepare($insertTagQuery);
+            // var_dump($insertStmt);die();
+
+            foreach ($tags as $tagId) {
+                $insertStmt->bindParam(':course_id', $_POST['id']);
+                $insertStmt->bindParam(':tag_id', $tagId);
+                $insertStmt->execute();
+                // var_dump($insertStmt);die();
+            }
+
+            $pdo->commit();
+            return true;
+        } catch (PDOException $e) {
+            echo "Erreur lors de la modification du cours : " . $e->getMessage();
+            return false;
+        } finally {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
+        }
     }
-    // modifier status du course
 
-    public function ModifierStatusCour($courseId, $statusCourse){
+    // modifier status du course
+    public function ModifierStatusCour($courseId, $statusCourse)
+    {
         $this->conn = new Connection();
 
         $query = "UPDATE courses SET status = :status WHERE id = :id";
@@ -261,5 +314,100 @@ class CourseModel
         $stmt->bindParam(':id', $courseId, PDO::PARAM_INT);
 
         return $stmt->execute();
+    }
+
+
+    public function getTotalCourses()
+    {
+        $this->conn = new Connection();
+
+        $query = "SELECT COUNT(*) as total_courses FROM courses";
+        $stmt = $this->conn->connect()->prepare($query);
+        $stmt->execute();
+        $result =  $stmt->fetchColumn();
+        // var_dump($result);
+        // die();
+        return $result;
+    }
+
+    public function getTotalCoursesInCategorie()
+    {
+        $this->conn = new Connection();
+
+        $query = "SELECT COUNT(*) as total_courses, categories.name as categorieName
+                FROM courses 
+                JOIN categories ON courses.categorie_id = categories.id
+                GROUP by categories.name
+                ";
+        $stmt = $this->conn->connect()->prepare($query);
+        $stmt->execute();
+        $result =  $stmt->fetchAll(PDO::FETCH_ASSOC);
+        // var_dump($result);
+        // die();
+        return $result;
+    }
+
+
+    public function getTotalInscriptionInCourse()
+    {
+        $this->conn = new Connection();
+
+        $query = "SELECT COUNT(*) AS ToTalStudents, courses.titre AS courseName
+                FROM courses 
+                JOIN inscription ON inscription.course_id = courses.id
+                JOIN users ON inscription.etudiant_id = users.id
+                GROUP BY courseName 
+                ORDER BY ToTalStudents DESC
+                LIMIT 2
+                ";
+        $stmt = $this->conn->connect()->prepare($query);
+        $stmt->execute();
+        $result =  $stmt->fetchAll(PDO::FETCH_ASSOC);
+        // var_dump($result);
+        // die();
+        return $result;
+    }
+
+    public function checkIfUserInscribed($userId, $courseId)
+    {
+        $this->conn = new Connection();
+
+        $query = "SELECT * FROM inscription WHERE course_id = :course_id AND etudiant_id = :etudiant_id";
+        $stmt = $this->conn->connect()->prepare($query);
+        $stmt->bindParam(':course_id', $courseId, PDO::PARAM_INT);
+        $stmt->bindParam(':etudiant_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->rowCount() > 0;
+    }
+
+
+    public function getCoursesByUserId($userId)
+    {
+        $this->conn = new Connection();
+
+        $query = "SELECT DISTINCT courses.id AS course_id,
+                    courses.titre, 
+                    courses.description, 
+                    courses.categorie_id, 
+                    categories.name AS categorie,                    
+                    GROUP_CONCAT(tags.name SEPARATOR ', ') AS tags
+              FROM courses
+              JOIN inscription ON courses.id = inscription.course_id
+              JOIN categories ON courses.categorie_id = categories.id 
+              LEFT JOIN tag_course ON courses.id = tag_course.course_id
+              LEFT JOIN tags ON tag_course.tag_id = tags.id
+              WHERE inscription.etudiant_id = :user_id
+              GROUP BY courses.id";  // Ajouté GROUP BY ici
+
+        $stmt = $this->conn->connect()->prepare($query);
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $courses = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $courses[] = $row;
+        }
+
+        return $courses;
     }
 }

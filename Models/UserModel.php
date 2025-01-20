@@ -17,7 +17,7 @@ class UserModel
 
     public function __construct()
     {
-        $this->conn = (new Connection())->connect();
+        
     }
 
 
@@ -185,6 +185,7 @@ class UserModel
     public function insertUser(UserModel $user)
     {
         // die($user);
+        $this->conn = (new Connection())->connect();
         $query = "INSERT INTO users (firstname, lastname, email, password, photo, phone, status, role_id ) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $this->conn->prepare($query);
@@ -200,6 +201,7 @@ class UserModel
             $user->getRole()->getId()
         ]);
     }
+
     public function getAllUsers()
     {
         $this->conn = new Connection();
@@ -236,6 +238,7 @@ class UserModel
     }
     public function findByEmailAndPassword(UserModel $user)
     {
+        $this->conn = (new Connection())->connect();
         $query = "SELECT id, firstname, lastname, email, phone, photo, role_id, password FROM users WHERE email = :email AND password = :password";
         $stmt = $this->conn->prepare($query);
         $stmt->execute([
@@ -243,12 +246,8 @@ class UserModel
             'password' => $user->getPassword(),
         ]);
 
-        $result = $stmt->fetchObject(__CLASS__);
+        $result = $stmt->fetchObject(UserModel::class); 
 
-        if (!$result) {
-            echo "L'utilisateur n'existe pas";
-            return false;
-        }
         return $result;
     }
 
@@ -257,6 +256,7 @@ class UserModel
 
     public function ModifierStatus(string $status, int $userId)
     {
+        $this->conn = (new Connection())->connect();
         $query = "UPDATE users SET status = :status WHERE id = :id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':status', $status, PDO::PARAM_STR);
@@ -267,6 +267,7 @@ class UserModel
     // delete user
     public function deleteUser($userId)
     {
+        $this->conn = (new Connection())->connect();
         $existingUser = $this->getUserById($userId);
     
         if ($existingUser) {
@@ -286,6 +287,7 @@ class UserModel
 
     public function getUserById(int $id)
     {
+        $this->conn = (new Connection())->connect();
         $query = "SELECT * FROM users WHERE id = :id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);

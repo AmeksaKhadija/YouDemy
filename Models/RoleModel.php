@@ -61,4 +61,19 @@ class RoleModel
             return null;
         }
     }
+
+    public function findRoleById($id){
+        $query = "SELECT * FROM roles WHERE id = :id";
+        $stmt = $this->conn->connect()->prepare($query);
+        $stmt->bindParam(':id', $id, PDO::PARAM_STR);
+        $stmt->execute();
+
+        $stmt->setFetchMode(PDO::FETCH_CLASS, __CLASS__);
+        $result = $stmt->fetch();
+        if ($result) {
+            return $result;
+        } else {
+            return null;
+        }
+    }
 }

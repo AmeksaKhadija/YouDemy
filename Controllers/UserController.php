@@ -3,6 +3,7 @@
 class UserController{
 
     private $userModel;
+    private $etudiantModel;
 
     public function __construct()
     {
@@ -10,6 +11,7 @@ class UserController{
         $conn = $database->connect();
 
         $this->userModel = new UserModel($conn);
+        $this->etudiantModel = new EtudiantModel($conn);
     }
 
     public function getAllUsers()
@@ -25,6 +27,10 @@ class UserController{
 
     public function deleteUser($userId){
         $this->userModel->deleteUser($userId);
+    }
+
+    public function inscrireAuCours($courseId){
+      return  $this->etudiantModel->inscrireAuCours($courseId);
     }
 
     

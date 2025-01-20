@@ -38,6 +38,14 @@ class categorieController
          return $categories;
     }
 
+    public function getTotalCategories()
+    {
+        $totalcategories = $this->categorieModel->getTotalCategories();
+        return $totalcategories;
+    }
+
+    
+
 }
 
 $categorieController = new CategorieController();

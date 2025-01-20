@@ -1,5 +1,12 @@
 <?php
-
+if (isset($_SESSION['user'])) {
+    $UserName = $_SESSION['user']->getRole()->getRoleName();
+    if ($UserName == 'Etudiant') {
+       header('location: /home');
+    }else if ($UserName == 'Admin') {
+        header('location: /AdminStatistics');
+    }
+    }
 
 $courController = new CourseController();
 $courses = $courController->getAllCourseWithoutEnseignant();
@@ -25,60 +32,62 @@ $tags = $tagController->getAllTags();
 <!-- bytewebster.com -->
 
 <body>
+    <?php 
+    ?>
     <!-- Dashboard -->
     <div class="d-flex flex-column flex-lg-row h-lg-full bg-surface-secondary">
         <!-- Vertical Navbar -->
-<nav class="navbar show navbar-vertical h-lg-screen navbar-expand-lg px-0 py-3 navbar-light bg-white border-bottom border-bottom-lg-0 border-end-lg" id="navbarVertical">
-        <div class="container-fluid">
-            <!-- Toggler -->
-            <button class="navbar-toggler ms-n2" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarCollapse" aria-controls="sidebarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <!-- Brand -->
-            <a class="navbar-brand py-lg-2 mb-lg-5 px-lg-6 me-0" href="/home">
-                <h3 class="text-primary"><img src="./../Assets/images/Blue White Minimalist Initial Academy Logo.png" width="40"><span class="text-dark">You</span>Demy</h3> 
-            </a>
-            <!-- User menu (mobile) -->
-            <div class="navbar-user d-lg-none">
-                <!-- Dropdown -->
-                <div class="dropdown">
-                    <!-- Toggle -->
-                    <a href="#" id="sidebarAvatar" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <div class="avatar-parent-child">
-                            <img alt="Image Placeholder" src="https://images.unsplash.com/photo-1548142813-c348350df52b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=3&w=256&h=256&q=80" class="avatar avatar- rounded-circle">
-                            <span class="avatar-child avatar-badge bg-success"></span>
-                        </div>
-                    </a>
+        <nav class="navbar show navbar-vertical h-lg-screen navbar-expand-lg px-0 py-3 navbar-light bg-white border-bottom border-bottom-lg-0 border-end-lg" id="navbarVertical">
+            <div class="container-fluid">
+                <!-- Toggler -->
+                <button class="navbar-toggler ms-n2" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarCollapse" aria-controls="sidebarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <!-- Brand -->
+                <a class="navbar-brand py-lg-2 mb-lg-5 px-lg-6 me-0" href="/home">
+                    <h3 class="text-primary"><img src="./../Assets/images/Blue White Minimalist Initial Academy Logo.png" width="40"><span class="text-dark">You</span>Demy</h3>
+                </a>
+                <!-- User menu (mobile) -->
+                <div class="navbar-user d-lg-none">
+                    <!-- Dropdown -->
+                    <div class="dropdown">
+                        <!-- Toggle -->
+                        <a href="#" id="sidebarAvatar" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <div class="avatar-parent-child">
+                                <img alt="Image Placeholder" src="https://images.unsplash.com/photo-1548142813-c348350df52b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=3&w=256&h=256&q=80" class="avatar avatar- rounded-circle">
+                                <span class="avatar-child avatar-badge bg-success"></span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <!-- Collapse -->
+                <div class="collapse navbar-collapse" id="sidebarCollapse">
+                    <!-- Navigation -->
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a href="/EnseignantStatistics" class="nav-link" href="adminBord.php">
+                                <i class="bi bi-house"></i> Statistiques
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/EnseignantCourse" class="nav-link" href="adminLivres.php">
+                                <i class="bi bi-file-text"></i>Mes Cours
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/studentsInscrire" class="nav-link" href="adminUser.php">
+                                <i class="bi bi-people"></i> Les inscriptions
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/logout" class="nav-link" href="#">
+                                <i class="bi bi-box-arrow-left"></i> Logout
+                            </a>
+                        </li>
+                    </ul>
                 </div>
             </div>
-            <!-- Collapse -->
-            <div class="collapse navbar-collapse" id="sidebarCollapse">
-                <!-- Navigation -->
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a href="/EnseignantStatistics" class="nav-link" href="adminBord.php">
-                            <i class="bi bi-house"></i> Statistiques
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="/EnseignantCourse" class="nav-link" href="adminLivres.php">
-                        <i class="bi bi-file-text"></i> Cours
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="/studentsInscrire" class="nav-link" href="adminUser.php">
-                            <i class="bi bi-people"></i> students
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="/logout" class="nav-link" href="#">
-                            <i class="bi bi-box-arrow-left"></i> Logout
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+        </nav>
         <!-- Main content -->
         <div class="h-screen flex-grow-1 overflow-y-lg-auto">
             <?php
@@ -111,7 +120,6 @@ $tags = $tagController->getAllTags();
                                             <th scope="col">Descrition Courte</th>
                                             <th scope="col">Categorie</th>
                                             <th scope="col">Tags</th>
-                                            <!-- <th scope="col">Enseignant</th> -->
                                             <th scope="col">Status</th>
                                             <th scope="col">Actions</th>
                                         </tr>
@@ -139,23 +147,17 @@ $tags = $tagController->getAllTags();
                                                         <?= $course->getTags(); ?>
                                                     </a>
                                                 </td>
-                                                <!-- <td>
-                                                    <a class="text-heading font-semibold" href="#">
-                                                        <?= $course->getEnseignant(); ?>
-                                                    </a>
-                                                </td> -->
                                                 <td>
                                                     <a class="text-heading font-semibold" href="#">
                                                         <?= $course->getStatus(); ?>
                                                     </a>
                                                 </td>
                                                 <td class="d-flex gap-2">
-                                                    <form method="POST" action="/ModifierCour">
+                                                    <form method="POST" action="/checkToEditCourse">
                                                         <input type="hidden" name="id" value="<?= $course->getId(); ?>">
-                                                        <input type="hidden" name="id" value="suspended">
                                                         <input type="submit" class="btn btn-sm btn-neutral" value="Edit">
                                                     </form>
-                                                    <form method="POST" action="/DeletCourse">
+                                                    <form method="POST" action="/checkToDeletCourse">
                                                         <input type="hidden" name="id" value="<?= $course->getId(); ?>">
                                                         <input type="submit" class="btn btn-sm btn-neutral" value="Supremer">
                                                     </form>
@@ -233,7 +235,7 @@ $tags = $tagController->getAllTags();
                                 <?php endforeach ?>
                             </div>
                         </div>
-                        
+
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             <button type="submit" name="submit" class=" btn btn-dark">save Course</button>

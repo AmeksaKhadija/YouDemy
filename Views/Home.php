@@ -1,7 +1,14 @@
 <?php
-
+  
+if (isset($_SESSION['user'])) {
+      if ($_SESSION['user']->getRole()->getRoleName() == 'Admin') {
+         header('location: /AdminStatistics');
+      }
+}
+  
 $courseController = new CourseController();
 $courses = $courseController->getAllCourse();
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -57,14 +64,22 @@ $courses = $courseController->getAllCourse();
 
 <body>
     <header class="text-center py-4">
+      
         <div class="header_title">
             <h1>Explore our Courses</h1>
             <p class="mb-0">Find the perfect course for your next step in learning</p>
         </div>
-        <div class="login_register">
-            <a href="/Login"><button class="btn btn-primary">Login</button></a>
-            <a href="/Register"><button class="btn btn-primary">Register</button></a>
-        </div>
+        <?php if (!isset($_SESSION['user'])) :?>
+            <div class="login_register">
+                <a href="/Login"><button class="btn btn-primary">Login</button></a>
+                <a href="/Register"><button class="btn btn-primary">Register</button></a>
+            </div>
+        <?php endif; ?>
+        <?php if (isset($_SESSION['user'])) :?>
+            <div class="login_register">
+                <a href="/logout"><button class="btn btn-primary">Logout</button></a>
+            </div>
+        <?php endif; ?>
     </header>
 
     <main class="container my-5">

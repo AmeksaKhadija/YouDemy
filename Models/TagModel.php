@@ -108,13 +108,13 @@ class TagModel
         }
     }
 
-    public function getTotalTag()
+    public function getTotalTags()
     {
-        $query = "SELECT COUNT(*) as total_tags FROM tag ";
+        $query = "SELECT COUNT(*) as total_tags FROM tags ";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
-        $res = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $res["total_tags"];
+        return $stmt->fetchColumn();
+         
     }
 
 }

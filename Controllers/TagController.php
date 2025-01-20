@@ -37,6 +37,12 @@ class TagController
     {
         return $this->tagModel->getTagById($id);
     }
+
+    public function getTotalTags()
+    {
+        $tags = $this->tagModel->getTotalTags();
+        return $tags;
+    }
 }
 
 $tagController = new TagController();
