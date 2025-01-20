@@ -80,6 +80,13 @@ $courses = $courseController->getAllCourseActive();
                 <a href="/logout"><button class="btn btn-primary">Logout</button></a>
             </div>
         <?php endif; ?>
+        <?php 
+        $userRole = $_SESSION['user']->getRole()->getRoleName();
+        if ($userRole == 'Enseignant') : ?>
+            <div class="login_register">
+                <a href="/EnseignantCourse"><button class="btn btn-primary">Dashboard</button></a>
+            </div>
+        <?php endif; ?>
     </header>
 
     <main class="container my-5">
