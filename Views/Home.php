@@ -80,9 +80,7 @@ $courses = $courseController->getAllCourseActive();
                 <a href="/logout"><button class="btn btn-primary">Logout</button></a>
             </div>
         <?php endif; ?>
-        <?php 
-        $userRole = $_SESSION['user']->getRole()->getRoleName();
-        if ($userRole == 'Enseignant') : ?>
+        <?php if (isset($_SESSION['user']) && $_SESSION['user']->getRole()->getRoleName() == 'Enseignant') : ?>
             <div class="login_register">
                 <a href="/EnseignantCourse"><button class="btn btn-primary">Dashboard</button></a>
             </div>
@@ -90,36 +88,36 @@ $courses = $courseController->getAllCourseActive();
     </header>
 
     <main class="container my-5">
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
-        <?php if (!empty($courses)): ?>
-            <?php foreach ($courses as $course): ?>
-                <?php if ($course->getStatus() === 'active'): ?>
-                    <div class="col">
-                        <div class="card h-100">
-                            <img src="<?= $course->getContenu() ?>" class="card-img-top" alt="Course Image">
-                            <div class="card-body">
-                                <h5 class="card-title"><?= $course->getTitre(); ?></h5>
-                                <p class="card-text"><?= $course->getDescriptionCourte() ?></p>
-                                <p class="card-text"><?= $course->getIdCategorie() ?></p>
-                                <p class="card-text"><?= $course->getTags() ?></p>
-                                <p class="text-muted">4.8 ⭐ (2,345 ratings)</p>
-                            </div>
-
-                            <form method="POST" action="/checkToViewDetail">
-                                <div class="card-footer text-center">
-                                    <input type="submit" class="btn btn-primary" value="SEE MORE">
-                                    <input type="hidden" name="id" value="<?= $course->getId(); ?>">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+            <?php if (!empty($courses)): ?>
+                <?php foreach ($courses as $course): ?>
+                    <?php if ($course->getStatus() === 'active'): ?>
+                        <div class="col">
+                            <div class="card h-100">
+                                <img src="<?= $course->getContenu() ?>" class="card-img-top" alt="Course Image">
+                                <div class="card-body">
+                                    <h5 class="card-title"><?= $course->getTitre(); ?></h5>
+                                    <p class="card-text"><?= $course->getDescriptionCourte() ?></p>
+                                    <p class="card-text"><?= $course->getIdCategorie() ?></p>
+                                    <p class="card-text"><?= $course->getTags() ?></p>
+                                    <p class="text-muted">4.8 ⭐ (2,345 ratings)</p>
                                 </div>
-                            </form>
+
+                                <form method="POST" action="/checkToViewDetail">
+                                    <div class="card-footer text-center">
+                                        <input type="submit" class="btn btn-primary" value="SEE MORE">
+                                        <input type="hidden" name="id" value="<?= $course->getId(); ?>">
+                                    </div>
+                                </form>
+                            </div>
                         </div>
-                    </div>
-                <?php endif; ?>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <p>Aucun courses trouvé.</p>
-        <?php endif; ?>
-    </div>
-</main>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <p>Aucun courses trouvé.</p>
+            <?php endif; ?>
+        </div>
+    </main>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
