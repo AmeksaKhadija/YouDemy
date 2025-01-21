@@ -7,18 +7,14 @@ class CategorieModel
     private $name;
     private $description;
 
-    public function __construct($conn)
-    {
-        $this->conn = $conn;
-        // $this->name = $name;
-        // $this->description = $description;
-    }
+    public function __construct()
+    {}
 
     public function setId($id){
         $this->id = $id;
     }
     public function getId(){
-        $this->id;
+       return $this->id;
     }
 
     public function setName($name){
@@ -45,8 +41,10 @@ class CategorieModel
 
     public function getAllCategories()
     {
+        $this->conn = new Connection();
+
         $query = "SELECT * FROM categories";
-        $stmt = $this->conn->query($query);
+        $stmt = $this->conn->connect()->query($query);
         $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
         if (!empty($categories)) {
             return $categories;
@@ -55,8 +53,10 @@ class CategorieModel
 
     public function deleteCategory($categoryId)
     {
+        $this->conn = new Connection();
+
         $query = "DELETE FROM categories WHERE id = :id";
-        $stmt = $this->conn->prepare($query);
+        $stmt = $this->conn->connect()->prepare($query);
         $stmt->bindParam(':id', $categoryId, PDO::PARAM_INT);
 
         if ($stmt->execute()) {
@@ -69,9 +69,10 @@ class CategorieModel
     public function addCategory($name,$description)
     {
         try {
+            $this->conn = new Connection();
 
             $query = "INSERT INTO categories(name,description) VALUES(:name, :description)";
-            $stmt = $this->conn->prepare($query);
+            $stmt = $this->conn->connect()->prepare($query);
             $stmt->bindParam(':name', $name);
             $stmt->bindParam(':description', $description);
             $stmt->execute();
@@ -84,12 +85,14 @@ class CategorieModel
 
     public function editCategorie($id,$name, $description)
     {
+        $this->conn = new Connection();
+
         $existingCategory = $this->getCategoryById($id);
     
         if ($existingCategory) {
             // echo "Editing existing category...";
             $query = "UPDATE categories SET name = :name , description = :description WHERE id = :id";
-            $stmt = $this->conn->prepare($query);
+            $stmt = $this->conn->connect()->prepare($query);
             $stmt->bindParam(':name', $name, PDO::PARAM_STR);
             $stmt->bindParam(':description', $description, PDO::PARAM_STR);
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
@@ -108,8 +111,10 @@ class CategorieModel
 
     public function getCategoryById($categoryId)
     {
+        $this->conn = new Connection();
+
         $query = "SELECT * FROM categories WHERE id = :id";
-        $stmt = $this->conn->prepare($query);
+        $stmt = $this->conn->connect()->prepare($query);
         $stmt->bindParam(':id', $categoryId, PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetchObject(CategorieModel::class);;
@@ -119,13 +124,16 @@ class CategorieModel
         } else {
             return null;
         }
+      
     }
 
 //statistics
     public function getTotalCategories()
     {
+        $this->conn = new Connection();
+
         $query = "SELECT COUNT(*) as total_categories FROM categories";
-        $stmt = $this->conn->prepare($query);
+        $stmt = $this->conn->connect()->prepare($query);
         $stmt->execute();
         return $stmt->fetchColumn();
 

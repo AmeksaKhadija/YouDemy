@@ -1,19 +1,27 @@
 <?php
 
 // include './../database/connection.php';
+#[\AllowDynamicProperties]
 
 class TagModel
 {
     public $conn;
     // public $name;
+    private $id;
     private $name;
     private $description;
 
-    public function __construct($conn)
+    public function __construct()
     {
-        $this->conn = $conn;
+        
+    }
+    public function setId($id){
+        $this->id = $id;
     }
 
+    public function getId(){
+        return $this->id;
+    }
     public function setName($name){
         $this->name = $name;
     }
@@ -37,8 +45,10 @@ class TagModel
 
     public function getAllTags()
     {
+        $this->conn = new Connection();
+
         $sql = "SELECT * FROM tags";
-        $query = $this->conn->query($sql);
+        $query = $this->conn->connect()->query($sql);
         $tags = $query->fetchAll(PDO::FETCH_ASSOC);
 
         if (!empty($tags)) {
@@ -50,8 +60,10 @@ class TagModel
 
     public function deleteTag($tagId)
     {
+        $this->conn = new Connection();
+
         $sql = "DELETE FROM tags WHERE id = :tagId";
-        $stmt = $this->conn->prepare($sql);
+        $stmt = $this->conn->connect()->prepare($sql);
         $stmt->bindParam(':tagId', $tagId, PDO::PARAM_INT);
         $result = $stmt->execute();
 
@@ -60,8 +72,10 @@ class TagModel
 
     public function addTag($name, $description)
     {
+        $this->conn = new Connection();
+
         $sql = "INSERT INTO tags (name, description) VALUES (:name, :description)";
-        $stmt = $this->conn->prepare($sql);
+        $stmt = $this->conn->connect()->prepare($sql);
         $stmt->bindParam(':name', $name, PDO::PARAM_STR);
         $stmt->bindParam(':description', $description, PDO::PARAM_STR);
         $result = $stmt->execute();
@@ -71,12 +85,14 @@ class TagModel
 
     public function editTag($id,$name, $description)
     {
+        $this->conn = new Connection();
+
         $existingTag = $this->getTagById($id);
 
         if ($existingTag) {
             // echo "Editing existing tag...";
             $query = "UPDATE tags SET name = :name, description = :description WHERE id = :id";
-            $stmt = $this->conn->prepare($query);
+            $stmt = $this->conn->connect()->prepare($query);
             $stmt->bindParam(':name', $name, PDO::PARAM_STR);
             $stmt->bindParam(':description', $description, PDO::PARAM_STR);
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
@@ -95,8 +111,10 @@ class TagModel
 
     public function getTagById($tagId)
     {
+        $this->conn = new Connection();
+
         $query = "SELECT * FROM tags WHERE id = :id";
-        $stmt = $this->conn->prepare($query);
+        $stmt = $this->conn->connect()->prepare($query);
         $stmt->bindParam(':id', $tagId, PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetchObject(TagModel::class);
@@ -110,8 +128,10 @@ class TagModel
 
     public function getTotalTags()
     {
+        $this->conn = new Connection();
+
         $query = "SELECT COUNT(*) as total_tags FROM tags ";
-        $stmt = $this->conn->prepare($query);
+        $stmt = $this->conn->connect()->prepare($query);
         $stmt->execute();
         return $stmt->fetchColumn();
          

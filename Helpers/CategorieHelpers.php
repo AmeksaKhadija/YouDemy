@@ -20,11 +20,12 @@ class CategorieHelpers{
     }
     
     public function checkToEditCategorie(){
-        // // isset pour la methode de modifier categorie
-        if (!empty($_POST['name']) && !empty($_POST['id']) && !empty($_POST['description'])) {
+        // var_dump($_POST);die();
+        if (isset($_POST['id']) && !empty($_POST['id']) && !empty($_POST['name']) && !empty($_POST['description'])) {
             $id = $_POST['id'];
             $nom = $_POST['name'];
             $description = $_POST['description'];
+
             $this->categorie->editCategorie($id, $nom, $description);
             header("Location: /AdminBordCateg");
         }

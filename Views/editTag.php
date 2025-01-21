@@ -2,9 +2,9 @@
 if (isset($_SESSION['user'])) {
     $UserName = $_SESSION['user']->getRole()->getRoleName();
     if ($UserName == 'Etudiant' || $UserName == 'Enseignant') {
-       header('location: /home');
+        header('location: /home');
     }
-    }
+}
 
 $result = [];
 
@@ -23,8 +23,8 @@ if (isset($_POST['id'])) {
     exit();
 }
 
-$name = isset($result['name']) ? htmlspecialchars($result['name']) : '';
-$description = isset($result['description']) ? htmlspecialchars($result['description']) : '';
+$name = $result->getName() != null ? htmlspecialchars($result->getName()) : '';
+$description = $result->getDescription() != null ? htmlspecialchars($result->getDescription()) : '';
 ?>
 
 
@@ -49,7 +49,7 @@ $description = isset($result['description']) ? htmlspecialchars($result['descrip
         <div class="mb-3">
             <label for="description" class="form-label">Description</label>
             <input class="form-control" name="description" type="text" value="<?php echo $description; ?>" required>
-            <input type="hidden" name="id" value="<?php echo htmlspecialchars($result['id']); ?>">
+            <input type="hidden" name="id" value="<?php echo htmlspecialchars($result->getId()); ?>">
         </div>
         <div class="modal-footer">
             <input type="submit" value="modify" name="modify">
